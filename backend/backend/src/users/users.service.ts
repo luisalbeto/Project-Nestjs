@@ -24,9 +24,16 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
+    try {
+      if (!id || isNaN(id)) {
+        throw new Error('ID inválido');
+      }
+      return await this.prisma.user.findUnique({
+        where: { id },
+      });
+    } catch (error) {
+      throw new Error(`Error al buscar el usuario con ID ${id}: ${error.message}`);
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {

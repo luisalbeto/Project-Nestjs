@@ -1,24 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from '../users/users.service';
-
+import { User } from '@prisma/client';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private usersService: UsersService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          // Intentamos obtener el token de las cookies
+          return req.cookies ? req.cookies['accessToken'] : null;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'secretKey',
     });
   }
-
-  async validate(payload: any) {
-    const user = await this.usersService.findOne(payload.sub);
-    if (!user) {
-      throw new Error('Usuario no encontrado');
+  async validate(payload: any): Promise<User> {
+    const userId = Number(payload.sub);
+    if (isNaN(userId)) {
+      throw new UnauthorizedException('Token inválido: ID de usuario no válido');
     }
-    // Retorna un objeto con las propiedades necesarias para los guards
-    return { id: user.id, email: user.email, role: user.role };
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
+    return user; // Devuelve el usuario autenticado
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

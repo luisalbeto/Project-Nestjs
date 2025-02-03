@@ -2,12 +2,17 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-// Importa otras páginas como Dashboard, Projects, etc.
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard'; 
+
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+
       {/* Agrega otras rutas aquí */}
       {/* Ejemplo: */}
       {/* <Route path="/dashboard" element={<Dashboard />} /> */}
