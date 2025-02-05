@@ -1,0 +1,14 @@
+{
+    "dashboard": {
+      "welcome": "Bienvenido al Dashboard",
+      "logout": "Cerrar Sesión",
+      "theme": "Cambiar Tema"
+    },
+    "settings": {
+    "title": "Configuración",
+    "lightMode": "Modo Claro",
+    "darkMode": "Modo Oscuro",
+    "back": "Volver al Dashboard"
+  }
+  }
+  

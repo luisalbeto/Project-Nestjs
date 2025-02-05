@@ -1,0 +1,17 @@
+{
+    "dashboard": {
+      "welcome": "Welcome to the Dashboard",
+      "logout": "Logout",
+      "theme": "Change Theme"
+    },
+    
+    "settings": {
+        "title": "Settings",
+        "lightMode": "Light Mode",
+        "darkMode": "Dark Mode",
+        "back": "Back to Dashboard"
+        }
+      
+        
+  }
+  

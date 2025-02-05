@@ -11,50 +11,67 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  // ✅ Validar usuario en Login
   async validateUser(email: string, password: string): Promise<User | null> {
-    // Buscar al usuario por email
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Comparar la contraseña ingresada con la almacenada (hasheada)
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    return user; // Retorna el usuario si las credenciales son válidas
+    return user;
   }
 
-
+  // ✅ Generar accessToken y refreshToken (con refreshToken hasheado)
   async login(user: User) {
     const payload = { email: user.email, sub: user.id };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-    
-    // Aquí podrías guardar el refresh token en la base de datos si lo deseas
-    await this.usersService.update(user.id, { refreshToken });
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // 🔹 Hashear el refreshToken antes de guardarlo en la BD
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.usersService.update(user.id, { refreshToken: hashedRefreshToken });
+
+    return { accessToken, refreshToken };
   }
 
-  async refreshAccessToken(refreshToken: string) {
-    const payload = this.jwtService.verify(refreshToken); // Verifica el refresh token
-    const user = await this.usersService.findOne(payload.sub);
-    
-    if (!user || user.refreshToken !== refreshToken) {
+  // ✅ Refrescar el accessToken de manera segura
+  // auth.service.ts
+async refreshAccessToken(refreshToken: string) {
+  try {
+    const payload = this.jwtService.verify(refreshToken); // Verifica si el token es válido
+    const user = await this.usersService.findById(payload.sub);
+
+    if (!user || !user.refreshToken) {
+      throw new UnauthorizedException('Usuario no encontrado o sin refresh token');
+    }
+
+    const isTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!isTokenValid) {
+      await this.usersService.update(user.id, { refreshToken: null });
       throw new UnauthorizedException('Refresh token inválido');
     }
 
-    const newAccessToken = this.jwtService.sign({ email: user.email, sub: user.id }, { expiresIn: '1h' });
-    
-    return {
-      accessToken: newAccessToken,
-    };
+    const newAccessToken = this.jwtService.sign(
+      { email: user.email, sub: user.id },
+      { expiresIn: '15m' },
+    );
+
+    return { accessToken: newAccessToken };
+  } catch (error) {
+    throw new UnauthorizedException('Refresh token inválido o expirado');
+  }
 }
 
+
+  // ✅ Logout: Eliminar el refreshToken de la base de datos
+  async logout(userId: number) {
+    await this.usersService.update(userId, { refreshToken: null });
+    return { message: 'Logout exitoso' };
+  }
 }

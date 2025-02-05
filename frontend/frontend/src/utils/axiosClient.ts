@@ -1,40 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000', // Usa variable de entorno
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true, // :fuego: Permite que el navegador envíe cookies HTTP-Only automáticamente
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
-// Interceptor de respuesta para manejar errores de autenticación y refrescar tokens
+
+// Interceptor para manejar errores de autenticación
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    // Si obtenemos un error 401 y no hemos intentado ya refrescar el token
+    
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        // Intentar obtener un nuevo access token usando el refresh token
-        const refreshResponse = await axiosClient.get('/auth/refresh'); // Asegúrate de que esta ruta sea válida en tu backend
-        // Si la respuesta es exitosa, reintenta la solicitud original
-        return axiosClient(originalRequest);
+        await axiosClient.post("/auth/refresh-token", {}, { withCredentials: true });
+        return axiosClient(originalRequest); // Reintentar la solicitud original
       } catch (refreshError) {
-        console.error('No se pudo refrescar el token:', refreshError);
-        window.location.href = '/login'; // Redirigir al login si falla el refresh
+        console.error("No se pudo refrescar el token:", refreshError);
+        const { logout } = useAuth();
+        logout(); // Si falla el refresh, cerrar sesión
       }
     }
-    // Si el error no fue un 401 o hubo otro tipo de error, rechazamos la promesa
     return Promise.reject(error);
   }
 );
+
 export default axiosClient;
-
-
-
-
-
-
-
-
-

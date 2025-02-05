@@ -21,7 +21,7 @@ export class UsersController {
   }
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.usersService.findOne(Number(id));
+    return this.usersService.findById(Number(id));
   }
   @Put(':id')
   @Roles('ADMIN') // Solo ADMIN puede editar usuarios
@@ -33,12 +33,7 @@ export class UsersController {
   async remove(@Param('id') id: string) {
     return this.usersService.remove(Number(id));
   }
-  // Nuevo endpoint para obtener la información del usuario autenticado
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  getMe(@Req() req: Request) {
-    return req.user; // Devuelve la información del usuario autenticado
-  }
+ 
 }
 
 

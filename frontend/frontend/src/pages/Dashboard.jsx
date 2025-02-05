@@ -1,57 +1,69 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+
 const Dashboard = () => {
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const navigate = useNavigate();
-  // Usar useQuery con la nueva forma de pasar un solo objeto
-  const { data: user, isLoading, error } = useQuery({
-    queryKey: ['user'], // Clave única para esta consulta
-    queryFn: async () => {
-      try {
-        // Hacer la solicitud sin necesidad de obtener el token manualmente
-        const response = await axios.get('http://localhost:3000/auth/me', {
-          withCredentials: true, // Permite que las cookies se envíen automáticamente
-        });
-        return response.data; // Retorna los datos del usuario
-      } catch (error) {
-        throw new Error('Error al obtener los datos del usuario');
-      }
-    },
-    onError: (error) => {
-      if (error.message === 'Token no encontrado') {
-        navigate('/'); // Redirige a la página de login si no hay token
-      }
-    },
-  });
-  // Manejo de estados de carga y error
-  if (isLoading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error.message}</p>; // Mostrar el mensaje de error real
+
+  // Redirigir al login si no está autenticado
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/unauthorized"); // Redirigir si no está autenticado
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  // Función para manejar el logout
+  const handleLogout = async () => {
+    await logout();
+    navigate("/"); // Redirigir al login después del logout
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-gray-700 dark:text-gray-300">Cargando...</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h1>Bienvenido al Dashboard</h1>
-      {user && <p>Usuario: {user.email}</p>}
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Barra de navegación */}
+      <nav className="bg-white dark:bg-gray-800 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <Link to="/dashboard" className="text-xl font-bold text-gray-700 dark:text-gray-300">
+                Dashboard
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link to="/settings" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+                Configuración
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Contenido principal */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300">Bienvenido al Dashboard</h1>
+        {user ? (
+          <p className="mt-4 text-gray-700 dark:text-gray-300">Usuario: {user.email}</p>
+        ) : (
+          <p className="mt-4 text-gray-700 dark:text-gray-300">Cargando usuario...</p>
+        )}
+      </div>
     </div>
   );
 };
+
 export default Dashboard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
