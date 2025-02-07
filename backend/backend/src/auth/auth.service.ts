@@ -28,9 +28,9 @@ export class AuthService {
 
   // ✅ Generar accessToken y refreshToken (con refreshToken hasheado)
   async login(user: User) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, role:user.role };
 
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
     // 🔹 Hashear el refreshToken antes de guardarlo en la BD
@@ -59,7 +59,7 @@ async refreshAccessToken(refreshToken: string) {
 
     const newAccessToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { expiresIn: '15m' },
+      { expiresIn: '1h' },
     );
 
     return { accessToken: newAccessToken };
