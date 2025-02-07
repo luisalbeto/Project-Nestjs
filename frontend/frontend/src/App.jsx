@@ -1,43 +1,65 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { I18nextProvider } from "react-i18next";
-import i18n from "./i18n";
-import { useDarkMode } from "./hooks/useDarkMode";
-import { useAuth } from "./context/AuthContext"; // Importar AuthContext
-import RequireAuth from "./components/RequireAuth"; // Importar RequireAuth
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-import Unauthorized from "./pages/Unauthorized"; // Importar la página Unauthorized
+import Register from "./pages/Register";
+import Projects from "./pages/Projects";
+import Tasks from "./pages/Tasks";
+import { useAuth } from "./hooks/useAuth";
+import { useDarkMode } from "./hooks/useDarkMode";
+
+const ProtectedRoute = ({ children }) => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return <p>Cargando...</p>;
+  return user ? children : <Navigate to="/" replace />;
+};
 
 const App = () => {
-  const [isDark] = useDarkMode(); // Aplicar el tema oscuro
-  const { user, isLoading } = useAuth(); // Obtener usuario autenticado desde el contexto
-  if (isLoading) return <p>Cargando...</p>; // Mostrar mientras se verifica autenticación
+  const [isDark] = useDarkMode(); // Activa el modo oscuro
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <div className={isDark ? "dark" : ""}>
+    <div className={`min-h-screen ${isDark ? "dark" : ""} bg-white dark:bg-gray-900 text-black dark:text-white`}>
+      <Router>
         <Routes>
-          {/* Rutas públicas */}
-          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          {/* Rutas protegidas por autenticación */}
-          <Route element={<RequireAuth allowedRoles={["USER", "ADMIN", "SUPERVISOR"]} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
-
-          {/* Ruta de acceso denegado */}
-          <Route path="/unauthorized" element={<Unauthorized />} />
-
-          {/* Ruta por defecto */}
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              <ProtectedRoute>
+                <Tasks />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      </div>
-    </I18nextProvider>
+      </Router>
+    </div>
   );
 };
 

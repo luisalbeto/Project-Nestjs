@@ -5,12 +5,15 @@
       "theme": "Change Theme"
     },
     
-    "settings": {
+    
+      "settings": {
         "title": "Settings",
         "lightMode": "Light Mode",
         "darkMode": "Dark Mode",
         "back": "Back to Dashboard"
-        }
+      }
+    
+    
       
         
   }
