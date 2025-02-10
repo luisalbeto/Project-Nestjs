@@ -5,6 +5,7 @@ import Settings from "./pages/Settings";
 import Register from "./pages/Register";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
+import Users from "./pages/Users";
 import { useAuth } from "./hooks/useAuth";
 import { useDarkMode } from "./hooks/useDarkMode";
 
@@ -14,6 +15,14 @@ const ProtectedRoute = ({ children }) => {
   if (isLoading) return <p>Cargando...</p>;
   return user ? children : <Navigate to="/" replace />;
 };
+
+const AdminRoute = ({ children }) => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return <p>Cargando...</p>;
+  return user?.role === "ADMIN" ? children : <Navigate to="/dashboard" />;
+};
+
 
 const App = () => {
   const [isDark] = useDarkMode(); // Activa el modo oscuro
@@ -57,7 +66,18 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+                  <Route
+  path="/users"
+  element={
+    <AdminRoute>
+      <Users />
+    </AdminRoute>
+  }
+/>
         </Routes>
+
+
+
       </Router>
     </div>
   );

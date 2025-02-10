@@ -3,27 +3,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import { z } from "zod";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-// Definimos los roles permitidos
 const ROLES = ["ADMIN", "SUPERVISOR", "USER"];
 
-// Esquema de validación con Zod
 const schema = z
   .object({
-    name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-    email: z.string().email("Debe ser un correo válido"),
-    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    name: z.string().min(2),
+    email: z.string().email(),
+    password: z.string().min(6),
     confirmPassword: z.string(),
-    role: z.enum(["ADMIN", "SUPERVISOR", "USER"], {
-      message: "Selecciona un rol válido",
-    }),
+    role: z.enum(["ADMIN", "SUPERVISOR", "USER"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
+    message: "passwordsDoNotMatch",
     path: ["confirmPassword"],
   });
 
 const Register = () => {
+  const { t } = useTranslation();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
   });
@@ -31,7 +29,6 @@ const Register = () => {
   const { register: registerUser } = useAuth();
 
   const onSubmit = (data) => {
-    console.log("📝 Registrando usuario:", data);
     registerUser({
       name: data.name,
       email: data.email,
@@ -41,71 +38,71 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">Registro</h2>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
+          {t("register.title")}
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Nombre */}
           <div>
-            <label className="block text-gray-700">Nombre:</label>
+            <label className="block text-gray-700 dark:text-gray-300">{t("register.name")}</label>
             <input
               type="text"
               {...register("name")}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{t(errors.name.message)}</p>}
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-gray-700">Email:</label>
+            <label className="block text-gray-700 dark:text-gray-300">{t("register.email")}</label>
             <input
               type="email"
               {...register("email")}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            {errors.email && <p className="text-red-500 text-sm">{t(errors.email.message)}</p>}
           </div>
 
           {/* Contraseña */}
           <div>
-            <label className="block text-gray-700">Contraseña:</label>
+            <label className="block text-gray-700 dark:text-gray-300">{t("register.password")}</label>
             <input
               type="password"
               {...register("password")}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+            {errors.password && <p className="text-red-500 text-sm">{t(errors.password.message)}</p>}
           </div>
 
           {/* Confirmar Contraseña */}
           <div>
-            <label className="block text-gray-700">Confirmar Contraseña:</label>
+            <label className="block text-gray-700 dark:text-gray-300">{t("register.confirmPassword")}</label>
             <input
               type="password"
               {...register("confirmPassword")}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
-            )}
+            {errors.confirmPassword && <p className="text-red-500 text-sm">{t(errors.confirmPassword.message)}</p>}
           </div>
 
           {/* Seleccionar Rol */}
           <div>
-            <label className="block text-gray-700">Rol:</label>
+            <label className="block text-gray-700 dark:text-gray-300">{t("register.role")}</label>
             <select
               {...register("role")}
-              className="w-full px-3 py-2 border rounded-lg bg-white focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 dark:text-white"
             >
-              <option value="">Selecciona un rol</option>
+              <option value="">{t("register.selectRole")}</option>
               {ROLES.map((role) => (
                 <option key={role} value={role}>
-                  {role}
+                  {t(`roles.${role.toLowerCase()}`)}
                 </option>
               ))}
             </select>
-            {errors.role && <p className="text-red-500 text-sm">{errors.role.message}</p>}
+            {errors.role && <p className="text-red-500 text-sm">{t(errors.role.message)}</p>}
           </div>
 
           {/* Botón de Registro */}
@@ -113,14 +110,14 @@ const Register = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Registrarse
+            {t("register.submit")}
           </button>
 
           {/* Enlace a Login */}
-          <p className="text-center text-gray-600 text-sm">
-            ¿Ya tienes una cuenta?{" "}
-            <Link to="/login" className="text-blue-500 hover:underline">
-              Inicia sesión
+          <p className="text-center text-gray-600 dark:text-gray-300 text-sm">
+            {t("register.alreadyHaveAccount")}{" "}
+            <Link to="/" className="text-blue-500 hover:underline">
+              {t("register.login")}
             </Link>
           </p>
         </form>

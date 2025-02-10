@@ -1,20 +1,95 @@
 {
-    "dashboard": {
-      "welcome": "Welcome to the Dashboard",
-      "logout": "Logout",
-      "theme": "Change Theme"
+  "settings": {
+    "title": "Settings",
+    "language": "Select Language",
+    "spanish": "Spanish",
+    "english": "English",
+    "theme": "Theme",
+    "darkMode": "Enable Dark Mode",
+    "lightMode": "Disable Dark Mode",
+    "back": "Back to Dashboard"
+  },
+  "projects": {
+    "title": "Project Management",
+    "create": "Create Project",
+    "namePlaceholder": "Project Name",
+    "descriptionPlaceholder": "Description",
+    "selectOwner": "Select a Supervisor",
+    "createButton": "Create Project",
+    "owner": "Owner",
+    "edit": "Edit",
+    "editPrompt": "New project name:",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this project?",
+    "loading": "Loading data..."
+  },
+  "tasks": {
+    "management": "Task Management",
+    "create": "Create New Task",
+    "titlePlaceholder": "Task Title",
+    "descriptionPlaceholder": "Task Description",
+    "assignUser": "Assign to a user",
+    "unassigned": "Unassigned",
+    "selectProject": "Select project",
+    "project": "Project",
+    "assignedTo": "Assigned to",
+    "priority": "Priority",
+    "status": "Status",
+    "createButton": "Create Task",
+    "loading": "Loading...",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "users": {
+    "management": "User Management",
+    "role": "Role",
+    "roles": {
+      "user": "User",
+      "supervisor": "Supervisor",
+      "admin": "Admin"
     },
-    
-    
-      "settings": {
-        "title": "Settings",
-        "lightMode": "Light Mode",
-        "darkMode": "Dark Mode",
-        "back": "Back to Dashboard"
-      }
-    
-    
-      
-        
-  }
-  
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this user?"
+  },
+  "dashboard": {
+    "welcome": "Dashboard",
+    "projects": "Total Projects",
+    "tasks": "Total Tasks",
+    "users": "Total Users",
+    "loading": "Loading..."
+  },
+  "login": {
+    "title": "Log In",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log In",
+    "invalidCredentials": "Incorrect email or password",
+    "unknownError": "Unknown error, please try again",
+    "noAccount": "Don't have an account?",
+    "register": "Sign Up",
+    "signout": "Sign Out"
+  },
+  "register": {
+    "title": "Register",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "role": "Role",
+    "selectRole": "Select a role",
+    "submit": "Sign Up",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Log In"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "supervisor": "Supervisor",
+    "user": "User"
+  },
+  "passwordsDoNotMatch": "Passwords do not match"
+}
