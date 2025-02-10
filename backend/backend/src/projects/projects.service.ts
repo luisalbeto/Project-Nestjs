@@ -15,7 +15,11 @@ export class ProjectsService {
   }
 
   async findAll(): Promise<Project[]> {
-    return this.prisma.project.findMany();
+    return this.prisma.project.findMany({
+      include: {
+        owner: true
+      }
+    });
   }
 
   async findOne(id: number): Promise<Project | null> {

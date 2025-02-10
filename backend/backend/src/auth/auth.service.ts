@@ -58,7 +58,7 @@ async refreshAccessToken(refreshToken: string) {
     }
 
     const newAccessToken = this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { email: user.email, sub: user.id, role: user.role },
       { expiresIn: '1h' },
     );
 

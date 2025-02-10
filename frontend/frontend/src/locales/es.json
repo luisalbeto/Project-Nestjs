@@ -1,14 +1,98 @@
 {
-    "dashboard": {
-      "welcome": "Bienvenido al Dashboard",
-      "logout": "Cerrar Sesión",
-      "theme": "Cambiar Tema"
+  "settings": {
+    "title": "Configuración",
+    "language": "Seleccionar idioma",
+    "spanish": "Español",
+    "english": "Inglés",
+    "theme": "Tema",
+    "darkMode": "Activar Modo Oscuro",
+    "lightMode": "Desactivar Modo Oscuro",
+    "back": "Volver al Dashboard"
+  },
+      "projects": {
+        "title": "Gestión de Proyectos",
+        "create": "Crear Proyecto",
+        "namePlaceholder": "Nombre del proyecto",
+        "descriptionPlaceholder": "Descripción",
+        "selectOwner": "Selecciona un Supervisor",
+        "createButton": "Crear Proyecto",
+        "owner": "Dueño",
+        "edit": "Editar",
+        "editPrompt": "Nuevo nombre del proyecto:",
+        "delete": "Eliminar",
+        "deleteConfirm": "¿Estás seguro de eliminar este proyecto?",
+        "loading": "Cargando datos..."
+      },
+      "tasks": {
+        "management": "Gestión de Tareas",
+        "selectProject": "Selecciona un proyecto",
+        "create": "Crear Nueva Tarea",
+        "titlePlaceholder": "Título de la tarea",
+        "descriptionPlaceholder": "Descripción de la tarea",
+        "assignUser": "Asignar a un usuario",
+        "unassigned": "No asignado",
+        "project": "Proyecto",
+        "assignedTo": "Asignado a",
+        "priority": "Prioridad",
+        "status": "Estatus",
+        "createButton": "Crear Tarea",
+        "loading": "Cargando...",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+  },
+  "users": {
+    "management": "Gestión de Usuarios",
+    "role": "Rol",
+    "roles": {
+      "user": "Usuario",
+      "supervisor": "Supervisor",
+      "admin": "Admin"
     },
-    "settings": {
-      "title": "Configuración",
-      "lightMode": "Modo Claro",
-      "darkMode": "Modo Oscuro",
-      "back": "Volver al Dashboard"
-    }
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Seguro que deseas eliminar este usuario?"
+  },
+  "dashboard": {
+    "welcome": "Inicio",
+    "projects": "Total de Proyectos",
+    "tasks": "Total de Tareas",
+    "users": "Total de Usuarios",
+    "loading": "Cargando..."
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar Sesión",
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "unknownError": "Error desconocido, intenta nuevamente",
+    "noAccount": "¿No tienes una cuenta?",
+    "register": "Regístrate",
+    "signout": "Cerrar Sesion"
+  },
+  "register": {
+    "title": "Registro",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "role": "Rol",
+    "selectRole": "Selecciona un rol",
+    "submit": "Registrarse",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "login": "Inicia sesión"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "supervisor": "Supervisor",
+    "user": "Usuario"
+  },
+  "passwordsDoNotMatch": "Las contraseñas no coinciden"
+
+    
   }
   

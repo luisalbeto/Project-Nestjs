@@ -1,18 +1,18 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Patch, Request, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Importa el guardia JWT
-import { RolesGuard } from '../auth/roles.guard'; // Importa el guardia de roles
-import { Roles } from '../auth/roles.decorator'; // Importa el decorador para roles
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('tasks')
-@UseGuards(JwtAuthGuard, RolesGuard) // Protege todas las rutas con JWT y Roles Guard
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  @Roles('ADMIN', 'SUPERVISOR') // Solo ADMIN y SUPERVISOR pueden asignar tareas
+  @Roles('ADMIN', 'SUPERVISOR')
   async create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
   }
@@ -24,17 +24,28 @@ export class TasksController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.tasksService.findOne(Number(id));
+      return this.tasksService.findOne(Number(id)); // 🔹 Convertir a número
   }
+  
 
   @Put(':id')
-  @Roles('USER', 'ADMIN', 'SUPERVISOR') // USER puede actualizar sus propias tareas; ADMIN y SUPERVISOR pueden asignar tareas
+  @Roles('USER', 'ADMIN', 'SUPERVISOR')
   async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(Number(id), updateTaskDto);
   }
 
+  @Patch(':id/status')
+  @Roles('USER')
+  async updateStatus(
+      @Param('id') id: string,
+      @Body() body: { status: string },
+      @Request() req
+  ) {
+      return this.tasksService.updateStatus(Number(id), body.status, req.user.id);
+  }
+
   @Delete(':id')
-  @Roles('ADMIN') // Solo ADMIN puede eliminar tareas
+  @Roles('ADMIN')
   async remove(@Param('id') id: string) {
     return this.tasksService.remove(Number(id));
   }
